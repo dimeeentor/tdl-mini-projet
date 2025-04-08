@@ -5,7 +5,7 @@ run1.2: exo1_2
 	./exo1_2 < commandeBillet.txt
 
 exo1.1: lex.yy.c
-	gcc ./Ex. 1/lex.yy.c -o exo1_1 -ll
+	gcc lex.yy.c -o exo1_1 -ll
 
 exo1.2: lex.yy.c
 	gcc lex.yy.c -o exo1_2 -ll
