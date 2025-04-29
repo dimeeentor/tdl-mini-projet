@@ -20,18 +20,13 @@ commande      : entete infos_perso liste_concerts
                 }
               ;
 
-entete        : T_DOSSIER T_CODE_DOSSIER T_RC
-              ;
+entete : T_DOSSIER T_CODE_DOSSIER T_RC;
 
-infos_perso   : T_PRENOM_NOM T_RC
-              ;
+infos_perso : T_PRENOM_NOM T_RC;
 
-liste_concerts: concert
-              | liste_concerts concert
-              ;
+liste_concerts : concert | liste_concerts concert;
 
-concert       : T_CODE_CONCERT T_NOM_CONCERT T_DATE T_HEURE T_NB T_PLACES T_RC
-              ;
+concert : T_CODE_CONCERT T_NOM_CONCERT T_DATE T_HEURE T_NB T_PLACES T_RC;
 %%
 
 void yyerror(const char *s) {
