@@ -18,7 +18,7 @@ T[0-9]{2,6}     { printf("codeConcert "); }
 [0-9]{2}:[0-9]{2}    { printf("heure "); }
 
 [ \t]+          { }
-\n              { }
+\n              { printf("RC\n"); }
 
 .               { fprintf(stderr, "Error: Unexpected character '%s'\n", yytext); }
 %%
