@@ -1,0 +1,44 @@
+
+Номера мест добавлены в формате [num1 num2 ...] после "places". Номера — целые числа, разделенные пробелами, в квадратных скобках.
+
+Изменения в грамматике:
+1. В lex добавлены токены T_SEAT_NUMBER ([0-9]+) для номеров мест, T_OPEN_BRACKET и T_CLOSE_BRACKET для [ и ].
+2. В yacc добавлено правило liste_numeros_places: T_OPEN_BRACKET sequence_numeros T_CLOSE_BRACKET, где sequence_numeros — один или более T_SEAT_NUMBER.
+3. Правило concert расширено: после T_PLACES добавлено liste_numeros_places.
+
+Modification du format et de la grammaire pour l'ajout des numéros de places (Exercice 2.3a)
+
+1. Modification du format de commande :
+
+Pour inclure la liste spécifique des numéros de places pour chaque concert, nous proposons de modifier le format de la ligne décrivant un concert. La liste des numéros de places sera ajoutée après le mot-clé "places" et avant le retour chariot (RC).
+
+La liste sera encadrée par des crochets `[` et `]`. Les numéros de places individuels (entiers non signés) à l'intérieur des crochets seront séparés par un ou plusieurs espaces ou tabulations. Le nombre de numéros de places listés doit correspondre à la valeur `nb` indiquée précédemment sur la ligne.
+
+Exemple d'une ligne de concert modifiée :
+T1114 LES-CHATS-SAUVAGES 14/04/25 19:30 2 places [101 102]
+
+2. Modification de la grammaire Yacc :
+
+Cette modification du format nécessite les ajustements suivants dans la grammaire Yacc :
+
+a) Nouveaux Tokens : Il faut définir de nouveaux tokens dans Lex et Yacc :
+   - `T_OPEN_BRACKET` : pour le crochet ouvrant `[`
+   - `T_CLOSE_BRACKET` : pour le crochet fermant `]`
+   - `T_SEAT_NUMBER` : pour un numéro de place (entier non signé). Ce token devra transporter la valeur entière du numéro si des traitements ultérieurs étaient nécessaires, mais pour l'étape 2.3(b), seul le type de token est requis.
+
+b) Modification de la règle `concert` : La règle décrivant un concert doit être étendue pour inclure la nouvelle structure de liste de places. L'ancienne règle :
+   `concert : T_CODE_CONCERT T_NOM_CONCERT T_DATE T_HEURE T_NB T_PLACES T_RC`
+   Devient :
+   `concert : T_CODE_CONCERT T_NOM_CONCERT T_DATE T_HEURE T_NB T_PLACES liste_numeros_places T_RC`
+
+c) Nouvelle règle `liste_numeros_places` : Il faut introduire une nouvelle règle pour décrire la structure entre crochets :
+   `liste_numeros_places : T_OPEN_BRACKET sequence_numeros T_CLOSE_BRACKET`
+   `;`
+
+d) Nouvelle règle `sequence_numeros` : Il faut une règle pour la séquence de numéros de places à l'intérieur des crochets. Elle doit permettre un ou plusieurs numéros :
+   `sequence_numeros : T_SEAT_NUMBER`
+                     `| sequence_numeros T_SEAT_NUMBER`
+   `;`
+   (Cette règle garantit qu'il y a au moins un numéro de place si les crochets sont présents).
+
+Ces modifications permettront à Yacc de valider la structure des commandes incluant les numéros de places spécifiques. Pour l'étape 2.3(b), les actions associées peuvent rester vides ou simplement valider la syntaxe sans calculs ni stockage de valeurs.
