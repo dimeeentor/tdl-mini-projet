@@ -13,26 +13,28 @@
 %start commande
 
 %%
-commande      : entete infos_perso liste_concerts
-                {
-                  printf("La commande est valide\n");
-                  YYACCEPT;
-                }
-              ;
+commande : entete infos_perso liste_concerts {
+    printf("La commande est valide\n");
+    YYACCEPT;
+};
 
-entete : T_DOSSIER T_CODE_DOSSIER T_RC;
+entete : T_DOSSIER T_CODE_DOSSIER T_RC /* Dossier et code */;
 
-infos_perso : T_PRENOM_NOM T_RC;
+infos_perso : T_PRENOM_NOM T_RC /* Prénom/nom */;
 
-liste_concerts : concert | liste_concerts concert;
+liste_concerts : concert | liste_concerts concert /* Liste de concerts : un ou plusieurs */;
 
-concert : T_CODE_CONCERT T_NOM_CONCERT T_DATE T_HEURE T_NB T_PLACES T_RC;
+concert : T_CODE_CONCERT T_NOM_CONCERT T_DATE T_HEURE T_NB T_PLACES T_RC /* Concert : informations complètes */;
 %%
 
 void yyerror(const char *s) {
-  fprintf(stderr, "Syntax error: %s\n", s);
+  fprintf(stderr, "Erreur de syntaxe : %s\n", s);
 }
 
 int main() {
-  return yyparse();
+    if (yyparse() != 0) {
+        exit(1); // Fin en cas d'erreur d'analyse
+    }
+
+    return 0;
 }

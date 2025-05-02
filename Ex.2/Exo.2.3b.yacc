@@ -17,33 +17,35 @@
 
 %%
 commande : entete infos_perso liste_concerts {
-        printf("La commande est valide\n");
-        YYACCEPT;
-    }
-;
+    printf("La commande est valide\n");
+    YYACCEPT;
+};
 
-entete : T_DOSSIER T_CODE_DOSSIER T_RC;
+entete : T_DOSSIER T_CODE_DOSSIER T_RC /* Dossier et code */;
 
-infos_perso : T_PRENOM_NOM T_RC;
+infos_perso : T_PRENOM_NOM T_RC /* Prénom/nom */;
 
-liste_concerts : concert | liste_concerts concert;
+liste_concerts : concert | liste_concerts concert /* Liste de concerts : un ou plusieurs */;
 
 concert : T_CODE_CONCERT T_NOM_CONCERT T_DATE T_HEURE T_NB T_PLACES T_LBRACKET list_seats T_RBRACKET T_RC {
     if (global_nb != seat_count) {
-        yyerror("Number of seats does not match the specified number of places");
+        yyerror("Le nombre de sièges ne correspond pas au nombre de places indiqué");
     }
+    seat_count = 0; /* Réinitialiser le compteur */
+};
 
-        seat_count = 0;
-    }
-;
-
-list_seats : T_SEAT_NUMBER { seat_count = 1; } | list_seats T_SEAT_NUMBER { seat_count++; };
+list_seats : T_SEAT_NUMBER { seat_count = 1; }
+           | list_seats T_SEAT_NUMBER { seat_count++; };
 %%
 
 void yyerror(const char *s) {
-    fprintf(stderr, "Syntax error: %s\n", s);
+    fprintf(stderr, "Erreur syntaxique : %s\n", s);
 }
 
 int main() {
-    return yyparse();
+    if (yyparse() != 0) {
+        exit(1);
+    }
+
+    return 0;
 }

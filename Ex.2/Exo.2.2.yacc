@@ -16,11 +16,10 @@
 %token T_RC
 
 %%
-commande: entete infos_perso liste_concerts {
-            printf("Le dossier %d concerne %d places\n", id_dossier, total_place);
-            YYACCEPT;
-        }
-    ;
+commande : entete infos_perso liste_concerts {
+    printf("Le dossier %d concerne %d places\n", id_dossier, total_place);
+    YYACCEPT;
+};
 
 entete: T_DOSSIER T_CODE_DOSSIER T_RC;
 
@@ -32,9 +31,13 @@ concert: T_CODE_CONCERT T_NOM_CONCERT T_DATE T_HEURE T_NB T_PLACES T_RC { total_
 %%
 
 void yyerror(const char *s) {
-  fprintf(stderr, "Syntax error: %s\n", s);
+  fprintf(stderr, "Erreur de syntaxe : %s\n", s);
 }
 
 int main() {
-  return yyparse();
+    if (yyparse() != 0) {
+        exit(1); // Fin en cas d'erreur d'analyse
+    }
+
+    return 0;
 }
